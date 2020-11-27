@@ -102,7 +102,7 @@ const index = (req,res,next)  => {
 }
 
 
-route.post('/',index)
+route.get('/',index)
 route.post('/login',login)
 route.post('/register',register)
 
