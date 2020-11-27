@@ -15,5 +15,5 @@ app.use('/api/products',require('./Controllers/productController'))
 
 
 const Port = process.env.Port || 3000
-
+listen(process.env.PORT || 3000)
 app.listen(Port,() => console.log('server started'))
