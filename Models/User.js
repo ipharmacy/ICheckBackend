@@ -18,6 +18,9 @@ const user = new mongoose.Schema({
   },
   sexe: {
     type: String
+  },
+  avatar: {
+    type: String
   }
 },{timestamps:true})
 const User = mongoose.model('users', user);

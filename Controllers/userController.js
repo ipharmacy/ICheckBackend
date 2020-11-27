@@ -37,7 +37,8 @@ const register = (req,res,next) => {
 					email: req.body.email,
 					password: hashedPass,
 					phone: "90057620",
-					sexe: "homme"
+					sexe: "homme",
+					avatar:"default"
 				})
 				user.save().then(user =>{
 					res.status(200).send(JSON.stringify({
@@ -68,11 +69,12 @@ const login = (req,res,next) => {
 				if (result) {
 					let token = jwt.sign({firstName:user.firstName},'verySecretValue',{expiresIn: '1h'})
 					res.status(200).send(JSON.stringify({
-				email:user.email,
-				firstName:user.firstName,
-				lastName:user.lastName,
-				phone:user.phone,
-				sexe:user.sexe
+					email:user.email,
+					firstName:user.firstName,
+					lastName:user.lastName,
+					phone:user.phone,
+					sexe:user.sexe,
+					avatar:user.sexe
 					}))
 				}else{	
 					res.status(201).send(JSON.stringify({
