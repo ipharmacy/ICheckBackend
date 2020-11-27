@@ -88,9 +88,21 @@ const login = (req,res,next) => {
 	})
 }
 
+//show product list
+const index = (req,res,next)  => {
+	User.find()
+	.then(response  => {
+		res.json(response)
+	})
+	.catch(error  =>{
+		res.json({
+			message: "an error occured when displaying users"
+		})
+	})
+}
 
 
-
+route.post('/',index)
 route.post('/login',login)
 route.post('/register',register)
 
