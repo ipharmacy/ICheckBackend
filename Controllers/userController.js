@@ -69,9 +69,11 @@ const login = (req,res,next) => {
 				if (result) {
 					let token = jwt.sign({firstName:user.firstName},'verySecretValue',{expiresIn: '1h'})
 					res.status(200).send(JSON.stringify({
-					email:user.email,
+					_id:user._id,
 					firstName:user.firstName,
 					lastName:user.lastName,
+					email:user.email,
+					password:user.password,
 					phone:user.phone,
 					sexe:user.sexe,
 					avatar:user.avatar
