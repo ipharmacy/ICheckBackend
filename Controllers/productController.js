@@ -23,7 +23,7 @@ const index = (req,res,next)  => {
 	try 
 	{
 
-	    Product.find().populate('reviews.user',{'firstName': 1,'lastName':1,'avatar':1}).exec(function (err, product) {
+	    Product.find().populate('reviews.user').exec(function (err, product) {
 	        if (err) {
 	            return res.json({
 	            status: 0,
@@ -73,6 +73,7 @@ const store = (req,res,next) => {
 		category: req.body.category,
 		address: req.body.address,
 		available: req.body.available,
+		rate: req.body.rate,
 		reviews: []
 	})
 	product.save()

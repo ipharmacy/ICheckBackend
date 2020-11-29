@@ -21,6 +21,9 @@ const product = new mongoose.Schema({
   available: {
     type: String
   },
+  rate: {
+    type: String
+  },
   reviews:[Review]
 
 
