@@ -1,11 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Product = require('../Models/Product')
-
+require('../Models/User');
 const route = express.Router();
 
 //show product list
-const index = (req,res,next)  => {
+/*const index = (req,res,next)  => {
 	Product.find()
 	.then(response  => {
 		res.json(response)
@@ -15,7 +15,39 @@ const index = (req,res,next)  => {
 			message: "an error occured when displaying products"
 		})
 	})
+}*/
+
+
+//show product list
+const index = (req,res,next)  => {
+	try 
+	{
+
+	    Product.find().populate('reviews.user',{'firstName': 1,'lastName':1,'avatar':1}).exec(function (err, product) {
+	        if (err) {
+	            return res.json({
+	            status: 0,
+	            message: ('error get product ' + err)
+	            });
+	        }
+	        else {
+	            res.json(product);
+	        }
+	    });
+	    
+
+	} catch (err) {
+	    console.log(err);
+	    res.json({
+	        status: 0,
+	        message: '500 Internal Server Error',
+	        data: {}
+	    })
+
+	}
 }
+
+
 
 //show single product
 const show = (req,res,next)  => {
@@ -41,7 +73,7 @@ const store = (req,res,next) => {
 		category: req.body.category,
 		address: req.body.address,
 		available: req.body.available,
-		rate: req.body.rate
+		reviews: []
 	})
 	product.save()
 	.then(response => {
@@ -57,7 +89,7 @@ const store = (req,res,next) => {
 }
 
 //update product
-const update = (req,res,next) => {
+/*const update = (req,res,next) => {
 	let prodId = req.body.prodId
 
 	let updatedProd = {
@@ -82,7 +114,7 @@ const update = (req,res,next) => {
 			message: "an error occured when updating product"
 		})
 	})
-}
+}*/
 
 //delete product
 const destroy = (req,res,next) => {
@@ -100,11 +132,89 @@ const destroy = (req,res,next) => {
 	})
 }
 
+
+
+
+
+
+
+
+// -- Crud Review
+// add Review to Product
+
+const addReview = (req, res) => {
+
+    try {
+    	
+        Product.findOne({'_id': req.body.prodId}).exec(function (err, product) {
+            if (err) {
+            	
+                return res.json({
+                    status: 0,
+                    message: ('Error find product ') + err
+                });
+            } else {
+                try {
+                	
+                    var reviewContent = [];
+                    if (req.body.review) {
+                        reviewContent = product.reviews;
+                        const review = {
+                            review: req.body.review,
+                            user: req.body.userId,
+                            rate: req.body.rate
+                        };
+                        reviewContent.push(review);
+                        product.reviews = reviewContent;
+                        product.save(function (err) {
+                            if (err) {
+                                console.log('error' + err)
+                            } else {
+                                res.status(200).send(JSON.stringify({
+									message:'review added succeffully'
+								}))
+                            }
+                        });
+                    }
+                } catch (err) {
+                    console.log(err);
+                    
+                    res.status(500).send(JSON.stringify({
+						status: 0,
+                        message: '500 Internal Server Error',
+                        data: {}
+					}))
+
+                }
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        
+        res.status(500).send(JSON.stringify({
+			status: 0,
+            message: '500 Internal Server Error',
+            data: {}
+		}))
+
+    }
+}
+
+
+
+
+
+
 //routes
 route.get('/',index)
 route.post('/id',show)
 route.post('/add',store)
-route.post('/update',update)
+//route.post('/update',update)
 route.post('/delete',destroy)
+
+//Comments routes
+route.post('/addReview', addReview);
+
 
 module.exports = route;

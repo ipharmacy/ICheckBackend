@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-
+const Schema = mongoose.Schema
+const Review = require('./Review').ReviewSchema; 
 const product = new mongoose.Schema({
   name: {
     type: String
@@ -20,9 +21,7 @@ const product = new mongoose.Schema({
   available: {
     type: String
   },
-  rate: {
-    type: String
-  }
+  reviews:[Review]
 
 
 },{timestamps:true})
