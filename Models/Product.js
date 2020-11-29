@@ -7,9 +7,7 @@ const product = new mongoose.Schema({
   description: {
     type: String
   },
-  image: {
-    type: String
-  },
+  image: [String],
   brand: {
     type: String
   },
@@ -25,6 +23,7 @@ const product = new mongoose.Schema({
   rate: {
     type: String
   }
+
 
 },{timestamps:true})
 const Product = mongoose.model('products', product);
