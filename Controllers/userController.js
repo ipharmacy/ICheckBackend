@@ -106,7 +106,7 @@ const index = (req,res,next)  => {
 }
 var fs = require('fs');
 storage = multer.diskStorage({
-    destination: './uploads/users/',
+    destination: './public/users/',
     filename: function(req, file, cb) {
       return crypto.pseudoRandomBytes(16, function(err, raw) {
         if (err) {
