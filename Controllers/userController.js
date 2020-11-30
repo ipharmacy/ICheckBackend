@@ -104,12 +104,53 @@ const index = (req,res,next)  => {
 		})
 	})
 }
+var fs = require('fs');
+storage = multer.diskStorage({
+    destination: './uploads/users/',
+    filename: function(req, file, cb) {
+      return crypto.pseudoRandomBytes(16, function(err, raw) {
+        if (err) {
+          return cb(err);
+        }
+       return cb(null, file.originalname);
+      });
+    }
+  });
 
+const updateAvatar = (req,res,next) =>{
 
+	let updatedUser = {
+		avatar: req.body.avatar
+	}
+
+	User.findOneAndUpdate({ email: req.body.email },{$set: updatedUser})
+	.then(() => {
+		res.json({
+			message: "user updated successfully"
+		})
+	})
+	.catch(error => {
+		res.json({
+			message: "an error occured when updating user"
+		})
+	})
+}
+
+route.post('/updateAvatar/',updateAvatar)
 route.get('/',index)
 route.post('/login',login)
 route.post('/register',register)
-
+route.post("/upload", multer({
+    storage: storage
+  }).single('upload'), function(req, res) {
+	//res.redirect("/uploads/" + req.file.filename +"/"+req.body.email);
+    /*res.json({
+		avatar: req.file.filename
+	})*/
+	res.status(200).send(JSON.stringify({
+				avatar: req.file.filename
+			}))
+  });
 
 
 
