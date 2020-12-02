@@ -22,7 +22,7 @@ const product = new mongoose.Schema({
     type: String
   },
   rate: {
-    type: String
+    type: Number
   },
   reviews:[Review]
 

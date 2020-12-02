@@ -7,7 +7,7 @@ const review = new mongoose.Schema({
     type: String
   },
   rate: {
-    type: String
+    type: Number
   },
   user: {
     type: Schema.ObjectId,

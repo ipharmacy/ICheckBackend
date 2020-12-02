@@ -162,6 +162,14 @@ const addReview = (req, res) => {
                             rate: req.body.rate
                         };
                         reviewContent.push(review);
+                        var globalRate = 0;
+
+                        for (var i = 0; i < reviewContent.length; i++) {
+                        	globalRate += reviewContent[i].rate;
+                        }
+
+                        var rateMoyenne = (globalRate/(reviewContent.length));
+                        product.rate = rateMoyenne;
                         product.reviews = reviewContent;
                         product.save(function (err) {
                             if (err) {
