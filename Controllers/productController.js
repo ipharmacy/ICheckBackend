@@ -208,6 +208,105 @@ const addReview = (req, res) => {
 }
 
 
+// delete Review from Product
+
+const removeReview = (req, res) => {
+
+    try {
+
+        Product.findOne({'_id': req.body.prodId}).exec(function (err, product) {
+            if (err) {
+            	
+                return res.json({
+                    status: 0,
+                    message: ('Error find product ') + err
+                });
+            } else {
+                try {
+                    for (var i = 0; i < product.reviews.length; i++) {
+		                if(product.reviews[i]._id==req.body.reviewId)
+		                {
+		                    product.reviews.splice(i,1);
+		                }
+            		}
+                    product.save(function (err) {
+                        if (err) {
+                            console.log('error' + err)
+                        } else {
+                            res.status(200).send(JSON.stringify({
+								message:'review deleted succeffully'
+							}))
+                        }
+                    });
+                    
+                } catch (err) {
+                    console.log(err);
+                    
+                    res.status(500).send(JSON.stringify({
+						status: 0,
+                        message: '500 Internal Server Error',
+                        data: {}
+					}))
+
+                }
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        
+        res.status(500).send(JSON.stringify({
+			status: 0,
+            message: '500 Internal Server Error',
+            data: {}
+		}))
+
+    }
+}
+
+
+// get reviews by product
+
+const getProductReviews = (req, res) => {
+
+    try {
+        Product.findOne({'_id': req.body.prodId}).populate('reviews.user').exec(function (err, product) {
+            if (err) {
+            	
+                return res.json({
+                    status: 0,
+                    message: ('Error find product ') + err
+                });
+            } else {
+                try {
+                    res.json(product.reviews);
+                    
+                } catch (err) {
+                    console.log(err);
+                    
+                    res.status(500).send(JSON.stringify({
+						status: 0,
+                        message: '500 Internal Server Error',
+                        data: {}
+					}))
+
+                }
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        
+        res.status(500).send(JSON.stringify({
+			status: 0,
+            message: '500 Internal Server Error',
+            data: {}
+		}))
+
+    }
+}
+
+
 
 
 
@@ -219,8 +318,11 @@ route.post('/add',store)
 //route.post('/update',update)
 route.post('/delete',destroy)
 
-//Comments routes
+//Reviews routes
 route.post('/addReview', addReview);
+route.post('/removeReview', removeReview);
+route.post('/getProductReviews', getProductReviews);
+
 
 
 module.exports = route;
