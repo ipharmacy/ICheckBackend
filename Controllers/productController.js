@@ -156,10 +156,11 @@ const addReview = (req, res) => {
                     var reviewContent = [];
                     if (req.body.review) {
                         reviewContent = product.reviews;
+                        var getRate = parseFloat(req.body.rate)
                         const review = {
                             review: req.body.review,
                             user: req.body.userId,
-                            rate: req.body.rate
+                            rate: getRate
                         };
                         reviewContent.push(review);
                         var globalRate = 0;
