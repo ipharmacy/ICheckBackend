@@ -83,8 +83,6 @@ const show = (req,res,next)  => {
 	            res.json(product);
 	        }
 	    });
-
-
 }
 
 //add product
@@ -298,9 +296,8 @@ const removeReview = (req, res) => {
 const getProductReviews = (req, res) => {
 
     try {
-        Product.findOne({'_id': req.body.prodId}).populate('reviews.user').exec(function (err, product) {
+        Product.findOne({'_id': req.body.prodId}).populate('reviews.user',{"favorites": 0}).exec(function (err, product) {
             if (err) {
-            	
                 return res.json({
                     status: 0,
                     message: ('Error find product ') + err
