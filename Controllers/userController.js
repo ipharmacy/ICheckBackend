@@ -9,9 +9,9 @@ var multer, storage, path, crypto;
 multer = require('multer')
 path = require('path');
 crypto = require('crypto');
+var fs = require('fs');
 
 const route = express.Router();
-
 
 const register = (req,res,next) => {
 	bcrypt.hash(req.body.password,10,function(err,hashedPass) {
@@ -38,7 +38,8 @@ const register = (req,res,next) => {
 					password: hashedPass,
 					phone: "90057620",
 					sexe: "homme",
-					avatar:"default"
+					avatar:"default",
+					favorites:[]
 				})
 				user.save().then(user =>{
 					res.status(200).send(JSON.stringify({
@@ -76,7 +77,8 @@ const login = (req,res,next) => {
 					password:user.password,
 					phone:user.phone,
 					sexe:user.sexe,
-					avatar:user.avatar
+					avatar:user.avatar,
+					favorites:user.favorites
 					}))
 				}else{	
 					res.status(201).send(JSON.stringify({
@@ -87,7 +89,8 @@ const login = (req,res,next) => {
 						password:"",
 						phone:"",
 						sexe:"",
-						avatar:""
+						avatar:"",
+						favorites:[]
 					}))
 				}
 			})
@@ -100,15 +103,23 @@ const login = (req,res,next) => {
 				password:"",
 				phone:"",
 				sexe:"",
-				avatar:""
+				avatar:"",
+				favorites:[]
 			}))
 		}
 	})
 }
 
-//show product list
 const index = (req,res,next)  => {
-	User.find()
+	//User.find().populate('favorites.product').populate('reviews.user')
+	User.find().populate([
+        {
+          path: 'favorites.product',
+		  populate: {
+		    path: 'reviews.user'
+		  }
+        },
+      ])
 	.then(response  => {
 		res.json(response)
 	})
@@ -118,7 +129,7 @@ const index = (req,res,next)  => {
 		})
 	})
 }
-var fs = require('fs');
+
 storage = multer.diskStorage({
     destination: './public/users/',
     filename: function(req, file, cb) {
@@ -150,6 +161,120 @@ const updateAvatar = (req,res,next) =>{
 	})
 }
 
+
+
+// -- Crud favorite
+
+// add product to favorite
+const addFavorite = (req, res) => {
+
+    try {
+    	
+        User.findOne({'_id': req.body.userId}).exec(function (err, user) {
+            if (err) {
+            	
+                return res.json({
+                    status: 0,
+                    message: ('Error find User ') + err
+                });
+            } else {
+                try {
+                	
+                    var userFavorites = [];
+                    
+                    userFavorites = user.favorites;
+                    const favorite = {
+                        product: req.body.prodId
+                    };
+                    userFavorites.push(favorite);
+
+                    user.favorites = userFavorites;
+                    user.save(function (err) {
+	                    if (err) {
+	                        console.log('error' + err)
+	                    } else {
+	                        res.status(200).send(JSON.stringify({
+								message:'favorite added succeffully'
+							}))
+	                    }
+                    });
+                    
+                } catch (err) {
+                    console.log(err);
+                    
+                    res.status(500).send(JSON.stringify({
+                        message: '500 Internal Server Error'
+					}))
+
+                }
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        
+        res.status(500).send(JSON.stringify({
+            message: '500 Internal Server Error'
+		}))
+
+    }
+}
+
+// delete favorite
+const removeFavorite = (req, res) => {
+
+    try {
+        User.findOne({'_id': req.body.userId}).exec(function (err, user) {
+            if (err) {
+                return res.json({
+                    status: 0,
+                    message: ('Error find user ') + err
+                });
+            } else {
+                try {
+                    for (var i = 0; i < user.favorites.length; i++) {
+		                if(user.favorites[i]._id==req.body.favoriteId)
+		                {
+		                    user.favorites.splice(i,1);
+		                }
+            		}
+                    user.save(function (err) {
+                        if (err) {
+                            console.log('error' + err)
+                        } else {
+                            res.status(200).send(JSON.stringify({
+								message:'favorite deleted succeffully'
+							}))
+                        }
+                    });
+                    
+                } catch (err) {
+                    console.log(err);
+                    
+                    res.status(500).send(JSON.stringify({
+                        message: '500 Internal Server Error'
+					}))
+
+                }
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        
+        res.status(500).send(JSON.stringify({
+			status: 0,
+            message: '500 Internal Server Error',
+            data: {}
+		}))
+
+    }
+}
+
+
+
+
+
 route.post('/updateAvatar/',updateAvatar)
 route.get('/',index)
 route.post('/login',login)
@@ -157,19 +282,16 @@ route.post('/register',register)
 route.post("/upload", multer({
     storage: storage
   }).single('upload'), function(req, res) {
-	//res.redirect("/uploads/" + req.file.filename +"/"+req.body.email);
-    /*res.json({
-		avatar: req.file.filename
-	})*/
 	res.status(200).send(JSON.stringify({
-				avatar: req.file.filename
-			}))
+		avatar: req.file.filename
+	}))
   });
 
+//Favorites routes
+route.post('/addFavorite', addFavorite);
+route.post('/removeFavorite', removeFavorite);
 
 
 
-//route.get('/updateAvatar/:avatar/:email',updateAvatar)
-//route.post('/updateAvatar/',updateAvatar)
 
 module.exports = route;
