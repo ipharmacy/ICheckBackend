@@ -40,7 +40,7 @@ const index = (req,res,next)  => {
 const trending = (req,res,next)  => {
 	try 
 	{
-	    Product.find().sort('-rate').populate('reviews.user').exec(function (err, product) {
+	    Product.find().sort('-rate').select({"reviews": 0}).exec(function (err, product) {
 	        if (err) {
 	            return res.json({
 	            status: 0,
