@@ -11,8 +11,7 @@ const route = express.Router();
 const index = (req,res,next)  => {
 	try 
 	{
-
-	    Product.find().populate('reviews.user').exec(function (err, product) {
+	    Product.find().populate('reviews.user',{"favorites": 0}).exec(function (err, product) {
 	        if (err) {
 	            return res.json({
 	            status: 0,
@@ -40,7 +39,7 @@ const index = (req,res,next)  => {
 const trending = (req,res,next)  => {
 	try 
 	{
-	    Product.find().sort('-rate').select({"reviews": 0}).exec(function (err, product) {
+	    Product.find().sort('-rate').populate('reviews.user',{"favorites": 0}).exec(function (err, product) {
 	        if (err) {
 	            return res.json({
 	            status: 0,
@@ -72,7 +71,7 @@ const show = (req,res,next)  => {
 
 
 
-	Product.findById(prodId).populate('reviews.user').exec(function (err, product) {
+	Product.findById(prodId).populate('reviews.user',{"favorites": 0}).exec(function (err, product) {
 	        if (err) {
 	            return res.json({
 	            status: 0,
