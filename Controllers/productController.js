@@ -36,6 +36,34 @@ const index = (req,res,next)  => {
 	}
 }
 
+//show trending product list
+const trending = (req,res,next)  => {
+	try 
+	{
+	    Product.find().sort('-rate').populate('reviews.user').exec(function (err, product) {
+	        if (err) {
+	            return res.json({
+	            status: 0,
+	            message: ('error get product ' + err)
+	            });
+	        }
+	        else {
+	            res.json(product);
+	        }
+	    });
+	    
+
+	} catch (err) {
+	    console.log(err);
+	    res.json({
+	        status: 0,
+	        message: '500 Internal Server Error',
+	        data: {}
+	    })
+
+	}
+}
+
 
 
 //show single product
@@ -313,6 +341,7 @@ const getProductReviews = (req, res) => {
 
 //routes
 route.get('/',index)
+route.get('/trending',trending)
 route.post('/id',show)
 route.post('/add',store)
 //route.post('/update',update)
