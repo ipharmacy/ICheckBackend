@@ -233,7 +233,7 @@ const removeFavorite = (req, res) => {
             } else {
                 try {
                     for (var i = 0; i < user.favorites.length; i++) {
-		                if(user.favorites[i]._id==req.body.favoriteId)
+		                if(user.favorites[i].product==req.body.prodId)
 		                {
 		                    user.favorites.splice(i,1);
 		                }
