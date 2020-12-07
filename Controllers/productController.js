@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Product = require('../Models/Product')
-require('../Models/User');
+const User = require('../Models/User')
+//require('../Models/User');
 const route = express.Router();
 
 
@@ -69,8 +70,6 @@ const trending = (req,res,next)  => {
 const show = (req,res,next)  => {
 	let prodId = req.body.prodId
 
-
-
 	Product.findById(prodId).populate('reviews.user',{"favorites": 0}).exec(function (err, product) {
 	        if (err) {
 	            return res.json({
@@ -80,6 +79,42 @@ const show = (req,res,next)  => {
 	        }
 	        else {
 	            res.json(product);
+	        }
+	    });
+}
+
+
+//detail single product
+const detail = (req,res,next)  => {
+	let prodId = req.body.prodId
+
+	var connectedUser;
+	User.findOne({'_id': req.body.userId})
+	.then(user => {
+		connectedUser = user
+	})
+
+	Product.findById(prodId).populate('reviews.user',{"favorites": 0}).exec(function (err, product) {
+	        if (err) {
+	            return res.json({
+	            status: 0,
+	            message: ('an error occured when displaying single product ' + err)
+	            });
+	        }
+	        else {
+	            //res.json(product);
+	            var isLiked="0";
+	            
+	            for (var i = 0; i < connectedUser.favorites.length; i++) {
+	            	if (connectedUser.favorites[i].product.toString()===product._id.toString()) {
+	            		isLiked="1";
+	            	}
+	            }
+
+	            res.json({
+					product:product,
+					isLiked:isLiked
+				})
 	        }
 	    });
 }
@@ -337,8 +372,9 @@ const getProductReviews = (req, res) => {
 
 //routes
 route.get('/',index)
-route.get('/trending',trending)
+route.post('/trending',trending)
 route.post('/id',show)
+route.post('/detail',detail)
 route.post('/add',store)
 //route.post('/update',update)
 route.post('/delete',destroy)
