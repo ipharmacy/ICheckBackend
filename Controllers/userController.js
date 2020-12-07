@@ -165,6 +165,23 @@ const updateAvatar = (req,res,next) =>{
 
 // -- Crud favorite
 
+// get user favorites
+const getFavorite = (req,res,next)  => {
+	let userId = req.body.userId
+
+	User.findById(userId).populate('favorites.product',{"reviews": 0}).exec(function (err, favorites) {
+	        if (err) {
+	            return res.json({
+	            status: 0,
+	            message: ('an error occured when displaying single favorites ' + err)
+	            });
+	        }
+	        else {
+	            res.json(favorites);
+	        }
+	    });
+}
+
 // add product to favorite
 const addFavorite = (req, res) => {
 
@@ -288,6 +305,7 @@ route.post("/upload", multer({
   });
 
 //Favorites routes
+route.post('/getFavorite', getFavorite)
 route.post('/addFavorite', addFavorite);
 route.post('/removeFavorite', removeFavorite);
 
