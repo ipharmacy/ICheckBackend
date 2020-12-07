@@ -372,7 +372,7 @@ const getProductReviews = (req, res) => {
 
 //routes
 route.get('/',index)
-route.post('/trending',trending)
+route.get('/trending',trending)
 route.post('/id',show)
 route.post('/detail',detail)
 route.post('/add',store)
