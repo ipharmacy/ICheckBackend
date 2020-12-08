@@ -129,6 +129,19 @@ const index = (req,res,next)  => {
 	})
 }
 
+const friends = (req,res,next)  => {
+	//User.find().populate('favorites.product').populate('reviews.user')
+	User.find().select({'favorites':0})
+	.then(response  => {
+		res.json(response)
+	})
+	.catch(error  =>{
+		res.json({
+			message: "an error occured when displaying users"
+		})
+	})
+}
+
 storage = multer.diskStorage({
     destination: './public/users/',
     filename: function(req, file, cb) {
@@ -293,6 +306,7 @@ const removeFavorite = (req, res) => {
 
 route.post('/updateAvatar/',updateAvatar)
 route.get('/',index)
+route.get('/friends',friends)
 route.post('/login',login)
 route.post('/register',register)
 route.post("/upload", multer({
