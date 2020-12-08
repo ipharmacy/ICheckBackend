@@ -77,8 +77,7 @@ const login = (req,res,next) => {
 					password:user.password,
 					phone:user.phone,
 					sexe:user.sexe,
-					avatar:user.avatar,
-					favorites:user.favorites
+					avatar:user.avatar
 					}))
 				}else{	
 					res.status(201).send(JSON.stringify({
