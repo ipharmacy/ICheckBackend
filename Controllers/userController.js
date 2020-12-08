@@ -300,12 +300,27 @@ const removeFavorite = (req, res) => {
     }
 }
 
+//display uploads folder
+
+const displayUploads = (req, res) => {
+	var uploadFiles=[]
+	const testFolder = './public/users/';
+	fs.readdir(testFolder, (err, files) => {
+	  files.forEach(file => {
+	  	uploadFiles.push(file)
+	  });
+	  res.json(files)
+	});
+}
+
+
 
 
 
 
 route.post('/updateAvatar/',updateAvatar)
 route.get('/',index)
+
 route.get('/friends',friends)
 route.post('/login',login)
 route.post('/register',register)
@@ -322,7 +337,8 @@ route.post('/getFavorite', getFavorite)
 route.post('/addFavorite', addFavorite);
 route.post('/removeFavorite', removeFavorite);
 
-
+//uploads
+route.get('/displayUploads',displayUploads)
 
 
 module.exports = route;
