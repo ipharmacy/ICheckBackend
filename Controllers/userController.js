@@ -11,6 +11,15 @@ path = require('path');
 crypto = require('crypto');
 var fs = require('fs');
 
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'help.fashionar@gmail.com',
+    pass: 'esprit18'
+  }
+});
+
 const route = express.Router();
 
 const register = (req,res,next) => {
@@ -110,7 +119,6 @@ const login = (req,res,next) => {
 }
 
 const index = (req,res,next)  => {
-	//User.find().populate('favorites.product').populate('reviews.user')
 	User.find().populate([
         {
           path: 'favorites.product',
@@ -172,6 +180,31 @@ const updateAvatar = (req,res,next) =>{
 		})
 	})
 }
+
+
+const sendVerificationCode = (req,res,next) =>{
+
+	var userMail = req.body.email
+	var name = req.body.name
+	var code = req.body.verificationCode
+	var mailContent = `Almost done, `+name+` To complete your iCheck sign up, we just need to verify your email address: Please copy the code below to verify your account:`+code
+		
+	var mailOptions = {
+		from: 'help.fashionar@gmail.com',
+		to: userMail,
+		subject: 'Confirm your iCheck account',
+		text: mailContent
+	};
+
+	transporter.sendMail(mailOptions, function(error, info){
+		if (error) {
+		  res.json({message: error})
+		} else {
+		  res.json({message: 'sent'})
+		}
+	});
+}
+
 
 
 
@@ -318,12 +351,15 @@ const displayUploads = (req, res) => {
 
 
 
-route.post('/updateAvatar/',updateAvatar)
-route.get('/',index)
 
+route.get('/',index)
 route.get('/friends',friends)
+
+//authentification
 route.post('/login',login)
 route.post('/register',register)
+route.post('/sendVerificationCode',sendVerificationCode)
+route.post('/updateAvatar/',updateAvatar)
 route.post("/upload", multer({
     storage: storage
   }).single('upload'), function(req, res) {
