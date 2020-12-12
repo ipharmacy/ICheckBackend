@@ -48,6 +48,7 @@ const register = (req,res,next) => {
 					phone: "90057620",
 					sexe: "homme",
 					avatar:"default",
+					verified:0,
 					favorites:[]
 				})
 				user.save().then(user =>{
@@ -77,17 +78,30 @@ const login = (req,res,next) => {
 					res.json({error:err})
 				}
 				if (result) {
-					let token = jwt.sign({firstName:user.firstName},'verySecretValue',{expiresIn: '1h'})
-					res.status(200).send(JSON.stringify({
-					_id:user._id,
-					firstName:user.firstName,
-					lastName:user.lastName,
-					email:user.email,
-					password:user.password,
-					phone:user.phone,
-					sexe:user.sexe,
-					avatar:user.avatar
+					if (user.verified==0) {
+						res.status(203).send(JSON.stringify({
+						_id:"",
+						firstName:"",
+						lastName:"",
+						email:"",
+						password:"",
+						phone:"",
+						sexe:"",
+						avatar:""
 					}))
+					} else {
+						//let token = jwt.sign({firstName:user.firstName},'verySecretValue',{expiresIn: '1h'})
+						res.status(200).send(JSON.stringify({
+						_id:user._id,
+						firstName:user.firstName,
+						lastName:user.lastName,
+						email:user.email,
+						password:user.password,
+						phone:user.phone,
+						sexe:user.sexe,
+						avatar:user.avatar
+						}))
+					}
 				}else{	
 					res.status(201).send(JSON.stringify({
 						_id:"",
@@ -97,8 +111,7 @@ const login = (req,res,next) => {
 						password:"",
 						phone:"",
 						sexe:"",
-						avatar:"",
-						favorites:[]
+						avatar:""
 					}))
 				}
 			})
@@ -111,8 +124,7 @@ const login = (req,res,next) => {
 				password:"",
 				phone:"",
 				sexe:"",
-				avatar:"",
-				favorites:[]
+				avatar:""
 			}))
 		}
 	})
@@ -198,11 +210,30 @@ const sendVerificationCode = (req,res,next) =>{
 
 	transporter.sendMail(mailOptions, function(error, info){
 		if (error) {
-		  res.json({message: error})
+		  res.json({message: "error sending"})
 		} else {
 		  res.json({message: 'sent'})
 		}
 	});
+}
+
+const verifyAccount = (req,res,next) => {
+
+	let updatedUser = {
+		verified: 1
+	}
+
+	User.findOneAndUpdate({ email: req.body.email },{$set: updatedUser})
+	.then(() => {
+		res.json({
+			message: "Account verified"
+		})
+	})
+	.catch(error => {
+		res.json({
+			message: "an error occured when updating user"
+		})
+	})
 }
 
 
@@ -359,6 +390,7 @@ route.get('/friends',friends)
 route.post('/login',login)
 route.post('/register',register)
 route.post('/sendVerificationCode',sendVerificationCode)
+route.post('/verifyAccount',verifyAccount)
 route.post('/updateAvatar/',updateAvatar)
 route.post("/upload", multer({
     storage: storage

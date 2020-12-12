@@ -23,6 +23,9 @@ const user = new mongoose.Schema({
   avatar: {
     type: String
   },
+  verified: {
+    type: Number
+  },
   favorites:[Favorite]
 },{timestamps:true})
 
