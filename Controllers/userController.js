@@ -224,14 +224,28 @@ const verifyAccount = (req,res,next) => {
 	}
 
 	User.findOneAndUpdate({ email: req.body.email },{$set: updatedUser})
-	.then(() => {
+	.then((user) => {
 		res.json({
-			message: "Account verified"
+			_id:user._id,
+			firstName:user.firstName,
+			lastName:user.lastName,
+			email:user.email,
+			password:user.password,
+			phone:user.phone,
+			sexe:user.sexe,
+			avatar:user.avatar
 		})
 	})
 	.catch(error => {
 		res.json({
-			message: "an error occured when updating user"
+			_id:"",
+			firstName:"",
+			lastName:"",
+			email:"",
+			password:"",
+			phone:"",
+			sexe:"",
+			avatar:""
 		})
 	})
 }
