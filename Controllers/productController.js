@@ -202,13 +202,23 @@ const search = (req,res,next)  => {
 			console.log("no products found");
 		} else {
 			for (var i = 0; i < products.length; i++) {
-				const element = {
+				if (i==0) {
+					const element = {
+		            photo: "",
+		            name: "Products",
+		            description: "",
+		            type:"filter"
+	        		};
+	        		searchResult.push(element);
+	        	}
+	        	const element = {
 		            photo: products[i].image[0],
 		            name: products[i].name,
 		            description: products[i].description,
 		            type:"product"
 	        	};
 	        	searchResult.push(element);
+				
 			}
 			
 		}
@@ -219,14 +229,25 @@ const search = (req,res,next)  => {
 		if (users.length==0) {
 			console.log("no users found");
 		} else {
-			for (var i = 0; i < users.length; i++) {
-			  	const element = {
-		            photo: users[i].avatar,
-		            name: users[i].firstName+" "+users[i].lastName,
-		            description: users[i].email,
-		            type:"user"
+			for (var j = 0; j < users.length; j++) {
+				if (j==0) {
+					const element = {
+		            photo: "",
+		            name: "Users",
+		            description: "",
+		            type:"filter"
 	        	};
 	        	searchResult.push(element);
+				}
+				const element = {
+		            photo: users[j].avatar,
+		            name: users[j].firstName+" "+users[j].lastName,
+		            description: users[j].email,
+		            type:"user"
+		        	};
+		        searchResult.push(element);
+
+			  	
 			}
 		}
 		res.json(searchResult)
