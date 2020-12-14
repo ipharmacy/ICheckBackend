@@ -1,4 +1,4 @@
-/*const express = require('express');
+const express = require('express');
 const mongoose = require('mongoose');
 const Category = require('../Models/Category')
 
@@ -36,8 +36,7 @@ const store = (req,res,next) => {
 	let category = new Category({
 		name: req.body.name,
 		description: req.body.description,
-		image: req.body.image,
-		brands: []
+		image: req.body.image
 	})
 	category.save()
 	.then(response => {
@@ -60,4 +59,4 @@ route.get('/',index)
 route.post('/id',show)
 route.post('/add',store)
 
-module.exports = route;*/
+module.exports = route;

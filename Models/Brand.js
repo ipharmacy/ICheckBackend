@@ -1,5 +1,4 @@
-/*const mongoose = require('mongoose');
-const Product = require('./Product');
+const mongoose = require('mongoose');
 
 const brand = new mongoose.Schema({
   name: {
@@ -10,8 +9,7 @@ const brand = new mongoose.Schema({
   },
   image: {
     type: String
-  },
-  products:[Product]
+  }
 },{timestamps:true})
 const Brand = mongoose.model('brands', brand);
-module.exports = Brand*/
+module.exports = Brand

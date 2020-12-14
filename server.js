@@ -10,8 +10,8 @@ app.use('/uploads', express.static(__dirname + '/public'));
 
 app.use('/api/user',require('./Controllers/userController'))
 app.use('/api/products',require('./Controllers/productController'))
-//app.use('/api/brands',require('./Controllers/brandController'))
-
+app.use('/api/categories',require('./Controllers/categoryController'))
+app.use('/api/brands',require('./Controllers/brandController'))
 
 
 //const Port = process.env.Port || 3000

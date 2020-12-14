@@ -1,4 +1,4 @@
-/*const express = require('express');
+const express = require('express');
 const mongoose = require('mongoose');
 const Brand = require('../Models/Brand')
 
@@ -36,8 +36,7 @@ const store = (req,res,next) => {
 	let brand = new Brand({
 		name: req.body.name,
 		description: req.body.description,
-		image: req.body.image,
-		products: []
+		image: req.body.image
 	})
 	brand.save()
 	.then(response => {
@@ -60,4 +59,4 @@ route.get('/',index)
 route.post('/id',show)
 route.post('/add',store)
 
-module.exports = route;*/
+module.exports = route;
