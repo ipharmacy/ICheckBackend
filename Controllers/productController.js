@@ -7,7 +7,6 @@ const route = express.Router();
 
 
 
-
 //show product list
 const index = (req,res,next)  => {
 	try 
@@ -124,7 +123,7 @@ const store = (req,res,next) => {
 	let product = new Product({
 		name: req.body.name,
 		description: req.body.description,
-		image: req.body.image,
+		image: [],
 		brand: req.body.brand,
 		category: req.body.category,
 		address: req.body.address,
