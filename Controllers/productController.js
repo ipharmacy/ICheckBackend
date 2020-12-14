@@ -203,6 +203,7 @@ const search = (req,res,next)  => {
 			for (var i = 0; i < products.length; i++) {
 				if (i==0) {
 					const element = {
+					searchId:"filterId",
 		            photo: "",
 		            name: "Products",
 		            description: "",
@@ -211,6 +212,7 @@ const search = (req,res,next)  => {
 	        		searchResult.push(element);
 	        	}
 	        	const element = {
+	        		searchId: products[i]._id,
 		            photo: products[i].image[0],
 		            name: products[i].name,
 		            description: products[i].description,
@@ -231,6 +233,7 @@ const search = (req,res,next)  => {
 			for (var j = 0; j < users.length; j++) {
 				if (j==0) {
 					const element = {
+					searchId:"filterId",
 		            photo: "",
 		            name: "Users",
 		            description: "",
@@ -239,6 +242,7 @@ const search = (req,res,next)  => {
 	        	searchResult.push(element);
 				}
 				const element = {
+					searchId: users[j]._id,
 		            photo: users[j].avatar,
 		            name: users[j].firstName+" "+users[j].lastName,
 		            description: users[j].email,
