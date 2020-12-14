@@ -191,10 +191,53 @@ const destroy = (req,res,next) => {
 
 
 
+//search all collections
+const search = (req,res,next)  => {
 
+	var searchResult=[]
 
+	Product.find({ name: { $regex: req.body.searchString, $options: "i" } })
+	.then(products => {
+		if (products.length==0) {
+			console.log("no products found");
+		} else {
+			for (var i = 0; i < products.length; i++) {
+				const element = {
+		            photo: products[i].image[0],
+		            name: products[i].name,
+		            description: products[i].description,
+		            type:"product"
+	        	};
+	        	searchResult.push(element);
+			}
+			
+		}
+	})
 
+	User.find({ firstName: { $regex: req.body.searchString, $options: "i" } })
+	.then(users => {
+		if (users.length==0) {
+			console.log("no users found");
+		} else {
+			for (var i = 0; i < users.length; i++) {
+			  	const element = {
+		            photo: users[i].avatar,
+		            name: users[i].firstName+" "+users[i].lastName,
+		            description: users[i].email,
+		            type:"user"
+	        	};
+	        	searchResult.push(element);
+			}
+		}
+		res.json(searchResult)
+		
+		
+		
+	})
 
+	//res.json(searchResult)
+
+}
 
 // -- Crud Review
 // add Review to Product
@@ -375,6 +418,7 @@ route.get('/',index)
 route.get('/trending',trending)
 route.post('/id',show)
 route.post('/detail',detail)
+route.post('/search',search)
 route.post('/add',store)
 //route.post('/update',update)
 route.post('/delete',destroy)
