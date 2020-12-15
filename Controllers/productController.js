@@ -35,6 +35,7 @@ const index = (req,res,next)  => {
 	}
 }
 
+
 //show trending product list
 const trending = (req,res,next)  => {
 	try 
