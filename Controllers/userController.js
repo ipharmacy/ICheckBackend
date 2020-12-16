@@ -211,6 +211,7 @@ const sendVerificationCode = (req,res,next) =>{
 	transporter.sendMail(mailOptions, function(error, info){
 		if (error) {
 		  res.json({message: "error sending"})
+		  console.log(error);
 		} else {
 		  res.json({message: 'sent'})
 		}
