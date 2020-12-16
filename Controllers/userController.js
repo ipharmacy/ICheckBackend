@@ -20,7 +20,7 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-const route = express.Router();
+const route = express.Router();      
 
 const register = (req,res,next) => {
 	bcrypt.hash(req.body.password,10,function(err,hashedPass) {
