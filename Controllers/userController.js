@@ -26,7 +26,7 @@ const register = (req,res,next) => {
 	bcrypt.hash(req.body.password,10,function(err,hashedPass) {
 		console.log(req.body);
 		if (err) {
-			console.log('erreur hash');
+			console.log('erreur password hash');
 			res.json({
 				error: err
 			})
