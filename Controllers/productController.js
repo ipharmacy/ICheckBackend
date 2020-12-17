@@ -5,7 +5,7 @@ const User = require('../Models/User')
 //require('../Models/User');
 const route = express.Router();
 
-
+   
 
 //show product list
 const index = (req,res,next)  => {
