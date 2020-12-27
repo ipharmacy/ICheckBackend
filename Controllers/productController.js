@@ -91,9 +91,7 @@ const detail = (req,res,next)  => {
 	User.findOne({'_id': req.body.userId})
 	.then(user => {
 		connectedUser = user
-	})
-
-	Product.findById(prodId).populate('reviews.user',{"favorites": 0}).exec(function (err, product) {
+		Product.findById(prodId).populate('reviews.user',{"favorites": 0}).exec(function (err, product) {
 	        if (err) {
 	            return res.json({
 	            status: 0,
@@ -103,7 +101,8 @@ const detail = (req,res,next)  => {
 	        else {
 	            //res.json(product);
 	            var isLiked="0";
-	            
+	            console.log("connectedUser :",connectedUser);
+	            console.log("product :",product);
 	            for (var i = 0; i < connectedUser.favorites.length; i++) {
 	            	if (connectedUser.favorites[i].product.toString()===product._id.toString()) {
 	            		isLiked="1";
@@ -116,6 +115,9 @@ const detail = (req,res,next)  => {
 				})
 	        }
 	    });
+	})
+
+
 }
 
 //add product
