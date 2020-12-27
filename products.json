@@ -1,0 +1,5 @@
+{"_id":{"$oid":"5fd7b2d46705b20443f23858"},"image":["P3896108.jpg","P3896108_1.jpg"],"name":"Rosé Toner","description":"Le kit de coloration Rosé Bleach London est une coloration rose semi-permanent avec une nuance de couleur pour une vue rosé. ","brand":"BLEACHLONDON","category":"Cosmetics","address":"Tunis","available":"available","rate":{"$numberInt":"0"},"reviews":[],"createdAt":{"$date":{"$numberLong":"1607971540965"}},"updatedAt":{"$date":{"$numberLong":"1607971540965"}},"__v":{"$numberInt":"0"}}
+
+
+//vitamino
+{"_id":{"$oid":"5fd7b42f6705b20443f23859"},"image":["518334.jpg"],"name":"Vitamino Color","description":"Masque Pour Cheveux Colorés L'OREAL PROFESSIONNEL Formule professionnelle enrichie en resvératrol, puissant polyphénol","brand":"L'OREAL","category":"Cosmetics","address":"Tunis","available":"available","rate":{"$numberInt":"0"},"reviews":[],"createdAt":{"$date":{"$numberLong":"1607971887806"}},"updatedAt":{"$date":{"$numberLong":"1607971887806"}},"__v":{"$numberInt":"0"}}
