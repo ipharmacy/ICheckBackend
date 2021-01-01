@@ -9,17 +9,18 @@ const route = express.Router();
 const getMessages = (req,res,next)  => {
 	try 
 	{
-	    Message.findOne({'sender':req.body.senderId,'receiver':req.body.connectedId}).exec(function (err, messages) {
+	    Message.find({'sender':req.body.senderId,'receiver':req.body.connectedId}).exec(function (err, messages) {
 	        if (err) {
 	            return res.json({
 	            message: ('error get messages ' + err)
 	            });
 	        }
 	        else {
-	        	if (messages==null) {//try backwards
+
+	        	if (messages.length==0) {//try backwards
 	        		console.log("trying backwards");
 
-					    Message.findOne({'sender':req.body.connectedId,'receiver':req.body.senderId}).exec(function (err, secondmessages) {
+					    Message.find({'sender':req.body.connectedId,'receiver':req.body.senderId}).exec(function (err, secondmessages) {
 					        if (err) {
 					            return res.json({
 					            message: ('error get messages ' + err)
