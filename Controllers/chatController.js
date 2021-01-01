@@ -16,12 +16,29 @@ const getMessages = (req,res,next)  => {
 	            });
 	        }
 	        else {
-	        	if (messages==null) {
-	        		res.json([]);
+	        	if (messages==null) {//try backwards
+	        		console.log("trying backwards");
+
+					    Message.findOne({'sender':req.body.connectedId,'receiver':req.body.senderId}).exec(function (err, secondmessages) {
+					        if (err) {
+					            return res.json({
+					            message: ('error get messages ' + err)
+					            });
+					        }
+					        else {
+					        	if (secondmessages==null) {//try backwards
+					        		res.json([]);
+					        	} else {
+					        		res.json(secondmessages);
+					        	}
+					        }
+					    });
+
+
 	        	} else {
+	        		console.log("normal");
 	        		res.json(messages);
 	        	}
-	            
 	        }
 	    });
 
