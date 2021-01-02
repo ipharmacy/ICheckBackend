@@ -16,10 +16,9 @@ const getMessages = (req,res,next)  => {
 	            });
 	        }
 	        else {
-
+	        	var chat = []
 	        	if (messages.length==0) {//try backwards
 	        		console.log("trying backwards");
-
 					    Message.find({'sender':req.body.connectedId,'receiver':req.body.senderId}).exec(function (err, secondmessages) {
 					        if (err) {
 					            return res.json({
@@ -27,18 +26,37 @@ const getMessages = (req,res,next)  => {
 					            });
 					        }
 					        else {
-					        	if (secondmessages==null) {//try backwards
+					        	if (secondmessages.length==0) {//try backwards
 					        		res.json([]);
 					        	} else {
 					        		res.json(secondmessages);
 					        	}
 					        }
 					    });
-
-
 	        	} else {
 	        		console.log("normal");
-	        		res.json(messages);
+	        		for (var i = 0; i < messages.length; i++) {
+	        			chat.push(messages[i])
+	        		}
+	        		console.log("looking for more");
+	        		Message.find({'sender':req.body.connectedId,'receiver':req.body.senderId}).exec(function (err, secondmessages) {
+					        if (err) {
+					            return res.json({
+					            message: ('error get messages ' + err)
+					            });
+					        }
+					        else {
+					        	if (secondmessages.length==0) {
+					        		res.json(chat);
+					        	} else {
+					        		for (var i = 0; i < secondmessages.length; i++) {
+					        			chat.push(secondmessages[i])
+					        		}
+					        		res.json(chat);
+					        	}
+					        }
+					    });
+	        		//res.json(messages);
 	        	}
 	        }
 	    });
