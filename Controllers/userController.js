@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
+
 const User = require('../Models/User');
+const Notification = require('../Models/Notification');
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -194,7 +196,6 @@ const updateAvatar = (req,res,next) =>{
 	})
 }
 
-
 const sendVerificationCode = (req,res,next) =>{
 
 	var userMail = req.body.email
@@ -251,7 +252,6 @@ const verifyAccount = (req,res,next) => {
 		})
 	})
 }
-
 
 
 
@@ -397,7 +397,8 @@ const displayUploads = (req, res) => {
 // -- Friendship
 
 const addFriendship = (req, res) => {
-
+	var firstName_lastName=""
+	var connectedUserAvatar=""
     try {
     	
         User.findOne({'_id': req.body.userId}).exec(function (err, user) {
@@ -406,11 +407,13 @@ const addFriendship = (req, res) => {
                     message: ('Error find User ') + err
                 });
             } else {
-                try {
+                try {//store friend in your list
                 	
                     var connectedUserFriendships = [];
                     
                     connectedUserFriendships = user.friends;
+                    firstName_lastName = user.firstName+" "+user.lastName
+                    connectedUserAvatar = user.avatar
                     const myFriend = {
                     	Accepted: 0,
                         user: req.body.friendId
@@ -421,7 +424,7 @@ const addFriendship = (req, res) => {
                     user.save(function (err) {
 	                    if (err) {
 	                        console.log('error' + err)
-	                    } else {
+	                    } else {//store sender in in friend list
 							User.findOne({'_id': req.body.friendId}).exec(function (err, friendUser) {
 								var friendFriendships = [];
 								friendFriendships = friendUser.friends;
@@ -436,9 +439,27 @@ const addFriendship = (req, res) => {
 				                    if (err) {
 				                        console.log('error' + err)
 				                    } else {
-				                        res.status(200).send(JSON.stringify({
-											message:'friendship invite sent succeffully'
-										}))
+				                    	//add notification for friend to display
+										let notification = new Notification({
+											receiver: req.body.friendId,
+											title: "Friend Request",
+											description: firstName_lastName+" sent you a friend request",
+											image: connectedUserAvatar,
+											type: "friend",
+											link: req.body.userId
+										})
+											notification.save().then(user =>{
+												res.status(200).send(JSON.stringify({
+								 					message:'friendship invite sent successfully'
+												}))
+											})
+											.catch(error => {
+												res.json({
+													message: "An error occured when adding notification!"
+												})
+											})
+
+				                        
 				                    }});
 
 							});
@@ -471,6 +492,8 @@ const addFriendship = (req, res) => {
 }
 
 const acceptFriendship = (req, res) => {
+	var firstName_lastName = ""
+	var connectedUserAvatar = ""
 
     try {
     	
@@ -485,6 +508,8 @@ const acceptFriendship = (req, res) => {
                     var userFriendships = [];
                     
                     userFriendships = user.friends;
+                    firstName_lastName = user.firstName+" "+user.lastName
+                    connectedUserAvatar = user.avatar
 
                     for (var i = 0; i < userFriendships.length; i++) {
                     	if (userFriendships[i].user.toString()==req.body.friendId) {
@@ -516,9 +541,29 @@ const acceptFriendship = (req, res) => {
 				                    if (err) {
 				                        console.log('error' + err)
 				                    } else {
-				                        res.status(200).send(JSON.stringify({
-											message:'friendship accepted'
-										}))
+
+
+				                   		//add notification for friend to display
+										let notification = new Notification({
+											receiver: req.body.friendId,
+											title: "Request accepted",
+											description: firstName_lastName+" accepted your friend request",
+											image: connectedUserAvatar,
+											type: "friend",
+											link: req.body.userId
+										})
+											notification.save().then(user =>{
+												res.status(200).send(JSON.stringify({
+													message:'friendship accepted'
+												}))
+											})
+											.catch(error => {
+												res.json({
+													message: "An error occured when adding notification!"
+												})
+											})
+
+				                        
 				                    }});
 							});
 
