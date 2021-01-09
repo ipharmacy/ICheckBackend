@@ -698,7 +698,158 @@ const getNotifications = (req,res,next)  => {
 	            });
 	        }
 	        else {
-	            res.json(notifications);
+	        	var todayNotifications=[]
+	        	var weekNotifications=[]
+	        	var earlierNotifications=[]
+	        	var returnedNotifications=[]
+	        	for (var i = 0; i < notifications.length; i++) {
+	        		let created = new Date(notifications[i].createdAt)
+	        		let now = Date.now()
+	        		let millis=now-created;
+	        		if (millis<=86400000) {
+
+		        		let notification = {
+							_id:notifications[i]._id,
+							receiver:notifications[i].receiver,
+							title:notifications[i].title,
+							description:notifications[i].description,
+							image:notifications[i].image,
+							type:notifications[i].type,
+							link:notifications[i].link,
+							createdAt:notifications[i].createdAt,
+							updatedAt:notifications[i].updatedAt,
+							__v:notifications[i].__v
+						};
+		        		todayNotifications.push(notification)
+		        		
+	        			console.log("today");
+
+	        		}else if(millis<=604800000){
+		        		let notification = {
+							_id:notifications[i]._id,
+							receiver:notifications[i].receiver,
+							title:notifications[i].title,
+							description:notifications[i].description,
+							image:notifications[i].image,
+							type:notifications[i].type,
+							link:notifications[i].link,
+							createdAt:notifications[i].createdAt,
+							updatedAt:notifications[i].updatedAt,
+							__v:notifications[i].__v};
+		        		weekNotifications.push(notification)
+	        			console.log("week");
+	        		}else{
+
+		        		let notification = {
+							_id:notifications[i]._id,
+							receiver:notifications[i].receiver,
+							title:notifications[i].title,
+							description:notifications[i].description,
+							image:notifications[i].image,
+							type:notifications[i].type,
+							link:notifications[i].link,
+							createdAt:notifications[i].createdAt,
+							updatedAt:notifications[i].updatedAt,
+							__v:notifications[i].__v};
+		        		earlierNotifications.push(notification)
+	        			console.log("earlier");
+	        		}
+
+	        	}
+
+	        	if (todayNotifications.length!=0) {
+	        		let todayfilterNotification = {//Today
+						_id:"",
+						receiver:{
+					      _id: "5fbae3cbf5dfae0a54278c6a",
+					      firstName: 'Dhia',
+					      lastName: 'Ben Hamouda',
+					      email: 'dhia.benhamouda@esprit.tn',
+					      password: '$2a$10$dCmF6KWGpN.YvQyseq/jP..ISMXDfYzJ5YRIRyb4U8viLyH3zIxJe',
+					      phone: '24614285',
+					      sexe: 'homme',
+					      avatar: '125469966_1816703661801855_7880954262119767577_n.jpg',
+					      verified: 1,
+					      createdAt: "2020-11-22T22:18:51.897Z",
+					      updatedAt: "2021-01-09T20:30:56.163Z",
+					      __v: 74},
+						title:"Today",
+						description:"",
+						image:"",
+						type:"filter",
+						link:"",
+						createdAt:"",
+						updatedAt:"",
+						__v:0
+					};
+					returnedNotifications.push(todayfilterNotification)
+
+					for (var i = 0; i < todayNotifications.length; i++) {
+						returnedNotifications.push(todayNotifications[i])
+					}
+	        	}
+	        	if (weekNotifications.length!=0) {//This Week
+	        		let weekfilterNotification = {
+						_id:"",
+						receiver:{
+					      _id: "5fbae3cbf5dfae0a54278c6a",
+					      firstName: 'Dhia',
+					      lastName: 'Ben Hamouda',
+					      email: 'dhia.benhamouda@esprit.tn',
+					      password: '$2a$10$dCmF6KWGpN.YvQyseq/jP..ISMXDfYzJ5YRIRyb4U8viLyH3zIxJe',
+					      phone: '24614285',
+					      sexe: 'homme',
+					      avatar: '125469966_1816703661801855_7880954262119767577_n.jpg',
+					      verified: 1,
+					      createdAt: "2020-11-22T22:18:51.897Z",
+					      updatedAt: "2021-01-09T20:30:56.163Z",
+					      __v: 74},
+						title:"This Week",
+						description:"",
+						image:"",
+						type:"filter",
+						link:"",
+						createdAt:"",
+						updatedAt:"",
+						__v:0
+					};
+					returnedNotifications.push(weekfilterNotification)
+					
+					for (var i = 0; i < weekNotifications.length; i++) {
+						returnedNotifications.push(weekNotifications[i])
+					}
+	        	}
+	        	if (earlierNotifications.length!=0) {//Earlier
+	        		let earlierfilterNotification = {
+						_id:"",
+						receiver:{
+					      _id: "5fbae3cbf5dfae0a54278c6a",
+					      firstName: 'Dhia',
+					      lastName: 'Ben Hamouda',
+					      email: 'dhia.benhamouda@esprit.tn',
+					      password: '$2a$10$dCmF6KWGpN.YvQyseq/jP..ISMXDfYzJ5YRIRyb4U8viLyH3zIxJe',
+					      phone: '24614285',
+					      sexe: 'homme',
+					      avatar: '125469966_1816703661801855_7880954262119767577_n.jpg',
+					      verified: 1,
+					      createdAt: "2020-11-22T22:18:51.897Z",
+					      updatedAt: "2021-01-09T20:30:56.163Z",
+					      __v: 74},
+						title:"Earlier",
+						description:"",
+						image:"",
+						type:"filter",
+						link:"",
+						createdAt:"",
+						updatedAt:"",
+						__v:0
+					};
+					returnedNotifications.push(earlierfilterNotification)
+					for (var i = 0; i < earlierNotifications.length; i++) {
+						returnedNotifications.push(earlierNotifications[i])
+					}
+	        	}
+	            res.json(returnedNotifications);
 	        }
 	});
 }
