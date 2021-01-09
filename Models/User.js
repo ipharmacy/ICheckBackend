@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const Favorite = require('./Favorite').FavoriteSchema; 
+const Friendship = require('./Friendship').FriendshipSchema; 
 const user = new mongoose.Schema({
   firstName: {
     type: String
@@ -26,7 +27,8 @@ const user = new mongoose.Schema({
   verified: {
     type: Number
   },
-  favorites:[Favorite]
+  favorites:[Favorite],
+  friends:[Friendship]
 },{timestamps:true})
 
 const User = mongoose.model('users', user);

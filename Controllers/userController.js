@@ -49,7 +49,8 @@ const register = (req,res,next) => {
 					sexe: "homme",
 					avatar:"default",
 					verified:0,
-					favorites:[]
+					favorites:[],
+					friends:[]
 				})
 				user.save().then(user =>{
 					res.status(200).send(JSON.stringify({
@@ -393,7 +394,254 @@ const displayUploads = (req, res) => {
 }
 
 
+// -- Friendship
 
+const addFriendship = (req, res) => {
+
+    try {
+    	
+        User.findOne({'_id': req.body.userId}).exec(function (err, user) {
+            if (err) {
+                return res.json({
+                    message: ('Error find User ') + err
+                });
+            } else {
+                try {
+                	
+                    var connectedUserFriendships = [];
+                    
+                    connectedUserFriendships = user.friends;
+                    const myFriend = {
+                    	Accepted: 0,
+                        user: req.body.friendId
+                    };
+                    connectedUserFriendships.push(myFriend);
+
+                    user.friends = connectedUserFriendships;
+                    user.save(function (err) {
+	                    if (err) {
+	                        console.log('error' + err)
+	                    } else {
+							User.findOne({'_id': req.body.friendId}).exec(function (err, friendUser) {
+								var friendFriendships = [];
+								friendFriendships = friendUser.friends;
+								const myFriend = {
+			                    	Accepted: 0,
+			                        user: req.body.userId
+			                    };
+			                    friendFriendships.push(myFriend);
+
+			                    friendUser.friends = friendFriendships;
+			                    friendUser.save(function (err) {
+				                    if (err) {
+				                        console.log('error' + err)
+				                    } else {
+				                        res.status(200).send(JSON.stringify({
+											message:'friendship invite sent succeffully'
+										}))
+				                    }});
+
+							});
+	                    }});
+
+
+
+
+
+                    
+                } catch (err) {
+                    console.log(err);
+                    
+                    res.status(500).send(JSON.stringify({
+                        message: '500 Internal Server Error'
+					}))
+
+                }
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        
+        res.status(500).send(JSON.stringify({
+            message: '500 Internal Server Error'
+		}))
+
+    }
+}
+
+const acceptFriendship = (req, res) => {
+
+    try {
+    	
+        User.findOne({'_id': req.body.userId}).exec(function (err, user) {
+            if (err) {
+                return res.json({
+                    message: ('Error find User ') + err
+                });
+            } else {
+                try {
+                	
+                    var userFriendships = [];
+                    
+                    userFriendships = user.friends;
+
+                    for (var i = 0; i < userFriendships.length; i++) {
+                    	if (userFriendships[i].user.toString()==req.body.friendId) {
+                    		userFriendships[i].Accepted=1
+                    	}
+                    	
+                    }
+
+                    user.friends = userFriendships;
+                    user.save(function (err) {
+	                    if (err) {
+	                        console.log('error' + err)
+	                    } else {
+
+
+							User.findOne({'_id': req.body.friendId}).exec(function (err, friendUser) {
+								var userFriendships = [];
+			                    
+			                    userFriendships = friendUser.friends;
+
+			                    for (var i = 0; i < userFriendships.length; i++) {
+			                    	if (userFriendships[i].user.toString()==req.body.userId) {
+			                    		userFriendships[i].Accepted=1
+			                    	}
+			                    }
+
+			                    friendUser.friends = userFriendships;
+			                    friendUser.save(function (err) {
+				                    if (err) {
+				                        console.log('error' + err)
+				                    } else {
+				                        res.status(200).send(JSON.stringify({
+											message:'friendship accepted'
+										}))
+				                    }});
+							});
+
+
+
+	                        
+	                    }
+                    });
+                    
+                } catch (err) {
+                    console.log(err);
+                    
+                    res.status(500).send(JSON.stringify({
+                        message: '500 Internal Server Error'
+					}))
+
+                }
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        
+        res.status(500).send(JSON.stringify({
+            message: '500 Internal Server Error'
+		}))
+
+    }
+}
+
+const declineFriendship = (req, res) => {
+
+    try {
+    	
+        User.findOne({'_id': req.body.userId}).exec(function (err, user) {
+            if (err) {
+                return res.json({
+                    message: ('Error find User ') + err
+                });
+            } else {
+                try {
+                	
+                    var userFriendships = [];
+                    
+                    userFriendships = user.friends;
+
+                    for (var i = 0; i < userFriendships.length; i++) {
+                    	if (userFriendships[i].user.toString()==req.body.friendId) {
+                    		userFriendships.splice(i,1);
+                    	}
+                    }
+
+                    user.friends = userFriendships;
+                    user.save(function (err) {
+	                    if (err) {
+	                        console.log('error' + err)
+	                    } else {
+	                        res.status(200).send(JSON.stringify({
+								message:'friendship declined'
+							}))
+	                    }
+                    });
+                    
+                } catch (err) {
+                    console.log(err);
+                    
+                    res.status(500).send(JSON.stringify({
+                        message: '500 Internal Server Error'
+					}))
+
+                }
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        
+        res.status(500).send(JSON.stringify({
+            message: '500 Internal Server Error'
+		}))
+
+    }
+}
+
+const getFriendship = (req,res,next)  => {
+	let userId = req.body.userId
+	User.findById(userId).populate('friends.user',{"favorites": 0,"friends": 0}).exec(function (err, user) {
+	        if (err) {
+	            return res.json({
+	            message: ('an error occured when displaying friend ' + err)
+	            });
+	        }
+	        else {
+	        	var friends = []
+	        	for (var i = 0; i < user.friends.length; i++) {
+	        		if (user.friends[i].Accepted==1) {
+	        			friends.push(user.friends[i])
+	        		}
+	        	}
+	            res.json(friends);
+	        }
+	});
+}
+
+const getInvites = (req,res,next)  => {
+	let userId = req.body.userId
+	User.findById(userId).populate('friends.user',{"favorites": 0,"friends": 0}).exec(function (err, user) {
+	        if (err) {
+	            return res.json({
+	            message: ('an error occured when displaying friend ' + err)
+	            });
+	        }
+	        else {
+	        	var friends = []
+	        	for (var i = 0; i < user.friends.length; i++) {
+	        		if (user.friends[i].Accepted==0) {
+	        			friends.push(user.friends[i])
+	        		}
+	        	}
+	            res.json(friends);
+	        }
+	});
+}
 
 
 
@@ -419,6 +667,15 @@ route.post("/upload", multer({
 route.post('/getFavorite', getFavorite)
 route.post('/addFavorite', addFavorite);
 route.post('/removeFavorite', removeFavorite);
+
+//Friendship routes
+route.post('/getFriendship', getFriendship)
+route.post('/getInvites', getInvites)
+route.post('/addFriendship', addFriendship)
+route.post('/acceptFriendship', acceptFriendship)
+route.post('/declineFriendship', declineFriendship)
+
+
 
 //uploads
 route.get('/displayUploads',displayUploads)
