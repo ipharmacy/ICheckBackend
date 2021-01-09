@@ -690,6 +690,22 @@ const getInvites = (req,res,next)  => {
 
 
 
+const getNotifications = (req,res,next)  => {
+	Notification.find({'receiver': req.body.userId}).populate('receiver',{"favorites": 0,"friends": 0}).exec(function (err, notifications) {
+	        if (err) {
+	            return res.json({
+	            message: ('an error occured when displaying friend ' + err)
+	            });
+	        }
+	        else {
+	            res.json(notifications);
+	        }
+	});
+}
+
+
+
+
 
 route.get('/',index)
 route.get('/friends',friends)
@@ -719,6 +735,10 @@ route.post('/getInvites', getInvites)
 route.post('/addFriendship', addFriendship)
 route.post('/acceptFriendship', acceptFriendship)
 route.post('/declineFriendship', declineFriendship)
+
+//Notification routes
+route.post('/getNotifications', getNotifications)
+
 
 
 
