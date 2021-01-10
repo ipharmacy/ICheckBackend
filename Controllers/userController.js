@@ -553,9 +553,19 @@ const acceptFriendship = (req, res) => {
 											link: req.body.userId
 										})
 											notification.save().then(user =>{
-												res.status(200).send(JSON.stringify({
-													message:'friendship accepted'
-												}))
+												let notifId = req.body.notifId
+												Notification.findByIdAndRemove(notifId)
+												.then(() => {
+													res.status(200).send(JSON.stringify({
+														message:'friendship accepted'
+													}))
+												})
+												.catch(error =>{
+													res.json({
+														message:"an error occured when deleting notification"
+													})
+												})
+												
 											})
 											.catch(error => {
 												res.json({
@@ -621,9 +631,21 @@ const declineFriendship = (req, res) => {
 	                    if (err) {
 	                        console.log('error' + err)
 	                    } else {
-	                        res.status(200).send(JSON.stringify({
-								message:'friendship declined'
-							}))
+
+							let notifId = req.body.notifId
+							Notification.findByIdAndRemove(notifId)
+							.then(() => {
+								res.status(200).send(JSON.stringify({
+									message:'friendship declined'
+								}))
+							})
+							.catch(error =>{
+								res.json({
+									message:"an error occured when deleting notification"
+								})
+							})
+
+	                        
 	                    }
                     });
                     
@@ -687,8 +709,6 @@ const getInvites = (req,res,next)  => {
 	        }
 	});
 }
-
-
 
 const getNotifications = (req,res,next)  => {
 	Notification.find({'receiver': req.body.userId}).populate('receiver',{"favorites": 0,"friends": 0}).exec(function (err, notifications) {
