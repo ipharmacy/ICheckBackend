@@ -492,9 +492,10 @@ const addFriendship = (req, res) => {
 }
 
 const acceptFriendship = (req, res) => {
+
 	var firstName_lastName = ""
 	var connectedUserAvatar = ""
-
+	console.log(req.body);
     try {
     	
         User.findOne({'_id': req.body.userId}).exec(function (err, user) {
