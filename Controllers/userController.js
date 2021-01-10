@@ -876,6 +876,22 @@ const getNotifications = (req,res,next)  => {
 
 
 
+const getNotificationsForDhia = (req,res,next)  => {
+	Notification.find({'receiver': req.body.userId}).populate('receiver',{"favorites": 0,"friends": 0}).exec(function (err, notifications) {
+	        if (err) {
+	            return res.json({
+	            message: ('an error occured when displaying friend ' + err)
+	            });
+	        }
+	        else {
+				res.json(notifications);
+	        }
+	    })
+
+}
+
+
+
 
 
 route.get('/',index)
@@ -909,6 +925,9 @@ route.post('/declineFriendship', declineFriendship)
 
 //Notification routes
 route.post('/getNotifications', getNotifications)
+route.post('/getNotificationsForDhia', getNotificationsForDhia)
+
+
 
 
 
