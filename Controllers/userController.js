@@ -691,6 +691,25 @@ const getFriendship = (req,res,next)  => {
 	});
 }
 
+const getAllFriendship = (req,res,next)  => {
+	let userId = req.body.userId
+	User.findById(userId).populate('friends.user',{"favorites": 0,"friends": 0}).exec(function (err, user) {
+	        if (err) {
+	            return res.json({
+	            message: ('an error occured when displaying friend ' + err)
+	            });
+	        }
+	        else {
+	        	var friends = []
+	        	for (var i = 0; i < user.friends.length; i++) {
+	        		friends.push(user.friends[i])
+	        	}
+	            res.json(friends);
+	        }
+	});
+}
+
+
 const getInvites = (req,res,next)  => {
 	let userId = req.body.userId
 	User.findById(userId).populate('friends.user',{"favorites": 0,"friends": 0}).exec(function (err, user) {
@@ -919,6 +938,7 @@ route.post('/removeFavorite', removeFavorite);
 
 //Friendship routes
 route.post('/getFriendship', getFriendship)
+route.post('/getAllFriendship', getAllFriendship)
 route.post('/getInvites', getInvites)
 route.post('/addFriendship', addFriendship)
 route.post('/acceptFriendship', acceptFriendship)
