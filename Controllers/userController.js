@@ -794,10 +794,13 @@ const getNotifications = (req,res,next)  => {
 		        		earlierNotifications.push(notification)
 	        			console.log("earlier");
 	        		}
-
 	        	}
 
-	        	if (todayNotifications.length!=0) {
+	        	var tNotifications=todayNotifications.reverse()
+				var wNotifications=weekNotifications.reverse()
+				var eNotifications=earlierNotifications.reverse()
+
+	        	if (tNotifications.length!=0) {
 	        		let todayfilterNotification = {//Today
 						_id:"",
 						receiver:{
@@ -824,11 +827,12 @@ const getNotifications = (req,res,next)  => {
 					};
 					returnedNotifications.push(todayfilterNotification)
 
-					for (var i = 0; i < todayNotifications.length; i++) {
-						returnedNotifications.push(todayNotifications[i])
+					for (var i = 0; i < tNotifications.length; i++) {
+						returnedNotifications.push(tNotifications[i])
 					}
+
 	        	}
-	        	if (weekNotifications.length!=0) {//This Week
+	        	if (wNotifications.length!=0) {//This Week
 	        		let weekfilterNotification = {
 						_id:"",
 						receiver:{
@@ -855,11 +859,11 @@ const getNotifications = (req,res,next)  => {
 					};
 					returnedNotifications.push(weekfilterNotification)
 					
-					for (var i = 0; i < weekNotifications.length; i++) {
-						returnedNotifications.push(weekNotifications[i])
+					for (var i = 0; i < wNotifications.length; i++) {
+						returnedNotifications.push(wNotifications[i])
 					}
 	        	}
-	        	if (earlierNotifications.length!=0) {//Earlier
+	        	if (eNotifications.length!=0) {//Earlier
 	        		let earlierfilterNotification = {
 						_id:"",
 						receiver:{
@@ -885,8 +889,8 @@ const getNotifications = (req,res,next)  => {
 						__v:0
 					};
 					returnedNotifications.push(earlierfilterNotification)
-					for (var i = 0; i < earlierNotifications.length; i++) {
-						returnedNotifications.push(earlierNotifications[i])
+					for (var i = 0; i < eNotifications.length; i++) {
+						returnedNotifications.push(eNotifications[i])
 					}
 	        	}
 	            res.json(returnedNotifications);
