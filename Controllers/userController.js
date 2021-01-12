@@ -69,6 +69,52 @@ const register = (req,res,next) => {
 	})//end hash
 }
 
+const registerSara = (req,res,next) => {
+	bcrypt.hash(req.body.password,10,function(err,hashedPass) {
+		console.log(req.body);
+		if (err) {
+			console.log('erreur password hash');
+			res.json({
+				error: err
+			})
+		}
+		var verifemail = req.body.email
+
+		User.findOne({$or: [{email:verifemail}]})
+		.then(user => {
+			if (user) {//user found
+				res.status(201).send(JSON.stringify({
+					message:'User exist'
+				}))
+			}else{//no user found
+				let user = new User({
+					firstName: req.body.firstName,
+					lastName: req.body.lastName,
+					email: req.body.email,
+					password: hashedPass,
+					phone: "90057620",
+					sexe: "homme",
+					avatar:"default",
+					verified:1,
+					favorites:[],
+					friends:[]
+				})
+				user.save().then(user =>{
+					res.status(200).send(JSON.stringify({
+						message:'User Added Successfully!'
+					}))
+				})
+				.catch(error => {
+					res.json({
+						message: "An error occured when adding user!"
+					})
+				})
+			}//end else
+		})//end then 
+	})//end hash
+}
+
+
 const login = (req,res,next) => {
 	var email = req.body.email
 	var password = req.body.password
@@ -924,6 +970,8 @@ route.get('/friends',friends)
 //authentification
 route.post('/login',login)
 route.post('/register',register)
+route.post('/registerSara',registerSara)
+
 route.post('/sendVerificationCode',sendVerificationCode)
 route.post('/verifyAccount',verifyAccount)
 route.post('/updateAvatar/',updateAvatar)
