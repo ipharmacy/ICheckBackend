@@ -55,6 +55,60 @@ const getEventsByUser = (req,res,next)  => {
 	})
 }
 
+
+// add product to favorite
+const getParticipations = (req, res) => {
+
+    try {
+    	
+        Event.findOne({'_id': req.body.eventId}).populate('user').populate('participations.user').exec(function (err, event) {
+            if (err) {
+                return res.json({
+                    status: 0,
+                    message: ('Error find User ') + err
+                });
+            } else {
+                try {
+                    var eventParticipations = [];
+                    for (var i = 0; i < event.participations.length; i++) {
+                    	eventParticipations.push({
+                    		_id:event.participations[i]._id,
+                    		user:{
+                    			firstName:event.participations[i].user.firstName,
+								lastName:event.participations[i].user.lastName,
+								email:event.participations[i].user.email,
+								password:event.participations[i].user.password,
+								phone:event.participations[i].user.phone,
+								sexe:event.participations[i].user.sexe,
+								avatar:event.participations[i].user.avatar,
+								verified:event.participations[i].user.verified
+                    		}
+                    	}) 
+                    }
+                    res.json(eventParticipations)
+
+                    
+                } catch (err) {
+                    console.log(err);
+                    
+                    res.status(500).send(JSON.stringify({
+                        message: '500 Internal Server Error'
+					}))
+
+                }
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        
+        res.status(500).send(JSON.stringify({
+            message: '500 Internal Server Error'
+		}))
+
+    }
+}
+
 // add product to favorite
 const addParticipation = (req, res) => {
 
@@ -208,5 +262,7 @@ route.post('/destroy',destroy)
 route.post('/getEventsByUser',getEventsByUser)
 route.post('/addParticipation',addParticipation)
 route.post('/removeParticipation',removeParticipation)
+route.post('/getParticipations',getParticipations)
+
 
 module.exports = route;
