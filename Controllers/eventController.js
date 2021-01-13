@@ -181,6 +181,22 @@ const store = (req,res,next) => {
 	})
 }
 
+//delete product
+const destroy = (req,res,next) => {
+	let prodId = req.body.eventId
+	Event.findByIdAndRemove(prodId)
+	.then(() => {
+		res.json({
+			message:"product deleted successfully"
+		})
+	})
+	.catch(error =>{
+		res.json({
+			message:"an error occured when deleting product"
+		})
+	})
+}
+
 
 
 
@@ -188,6 +204,7 @@ const store = (req,res,next) => {
 route.get('/',index)
 route.post('/id',show)
 route.post('/add',store)
+route.post('/destroy',destroy)
 route.post('/getEventsByUser',getEventsByUser)
 route.post('/addParticipation',addParticipation)
 route.post('/removeParticipation',removeParticipation)
