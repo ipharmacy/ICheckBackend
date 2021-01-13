@@ -80,8 +80,7 @@ const getParticipations = (req, res) => {
 								password:event.participations[i].user.password,
 								phone:event.participations[i].user.phone,
 								sexe:event.participations[i].user.sexe,
-								avatar:event.participations[i].user.avatar,
-								verified:event.participations[i].user.verified
+								avatar:event.participations[i].user.avatar
                     		}
                     	}) 
                     }
