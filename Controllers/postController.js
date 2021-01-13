@@ -31,6 +31,14 @@ const show = (req,res,next)  => {
 	})
 }
 
+//detail single product
+const getPostsByUser = (req,res,next)  => {
+	Post.find({'user': req.body.userId}).populate("user",{"favorites": 0,"friends": 0})
+	.then(posts => {
+		res.json(posts)
+	})
+}
+
 //add Post
 const store = (req,res,next) => {
 	let post = new Post({
@@ -57,6 +65,8 @@ const store = (req,res,next) => {
 //routes
 route.get('/',index)
 route.post('/id',show)
+route.post('/getPostsByUser',getPostsByUser)
+
 route.post('/add',store)
 
 module.exports = route;
