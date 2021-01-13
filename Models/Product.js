@@ -24,6 +24,9 @@ const product = new mongoose.Schema({
   rate: {
     type: Number
   },
+  ARModelId: {
+    type: Number
+  },
   reviews:[Review]
 
 

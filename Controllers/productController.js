@@ -131,6 +131,7 @@ const store = (req,res,next) => {
 		address: req.body.address,
 		available: req.body.available,
 		rate: req.body.rate,
+		ARModelId: -1,
 		reviews: []
 	})
 	product.save()
